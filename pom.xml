@@ -1,0 +1,189 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>ChessBall</name>
+    <groupId>insarennes</groupId>
+    <artifactId>chessball</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <junit.version>5.13.4</junit.version>
+        <java.version>21</java.version>
+    </properties>
+
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <release>${java.version}</release>
+                </configuration>
+            </plugin>
+            <!-- Expose le chemin du jar Mockito pour l'option -javaagent. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>properties</id>
+                        <goals><goal>properties</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <!-- @{argLine} : JaCoCo pose son agent dans argLine.
+                         Mockito en -javaagent : méthode recommandée depuis
+                         Mockito 5 (l'auto-attachement disparaît des JDK
+                         récents et casse le mock de java.util.Random, TP5). -->
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar} -XX:+EnableDynamicAgentLoading</argLine>
+                </configuration>
+            </plugin>
+            <!-- TP4 Q7 : mvn -q compile exec:java lance chessball.ui.Main
+                 (copié depuis extras/ui de l'espace de travail). -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>chessball.ui.Main</mainClass>
+                </configuration>
+            </plugin>
+            <!-- Suites de l'encadrant·e (TP3 Q10, TP4 Q5) : src/test/java2
+                 vu comme sources de test par mvn et tout IDE (VS Code ou
+                 IntelliJ) — pas de « Test Sources Root » manuel. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>add-prof-tests</id>
+                        <phase>generate-test-sources</phase>
+                        <goals><goal>add-test-source</goal></goals>
+                        <configuration>
+                            <sources><source>src/test/java2</source></sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <configuration>
+                    <!-- JDK 25 : l'instrumentation de ByteBuddy/Mockito fait
+                         cracher des exceptions (sans conséquence, mais elles
+                         inquiètent les étudiants) — on les exclut. La dernière
+                         ligne vise les mocks des interfaces DU PROJET
+                         (chessball.xxx.X$MockitoMock$…, TP5 Q5–Q7), que les
+                         deux premières ne couvrent pas : 12 traces → 0,
+                         vérifié le 2026-10-01. -->
+                    <excludes>
+                        <exclude>net/bytebuddy/**</exclude>
+                        <exclude>org/mockito/**</exclude>
+                        <exclude>*$MockitoMock$*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution><id>default-prepare-agent</id><goals><goal>prepare-agent</goal></goals></execution>
+                    <execution><id>default-report</id><goals><goal>report</goal></goals></execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals><goal>check</goal></goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit><counter>LINE</counter><value>COVEREDRATIO</value><minimum>1.0</minimum></limit>
+                                        <limit><counter>INSTRUCTION</counter><value>COVEREDRATIO</value><minimum>1.0</minimum></limit>
+                                        <limit><counter>BRANCH</counter><value>COVEREDRATIO</value><minimum>1.0</minimum></limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- TP5 Q11 :
+             mvn -Pmutation test-compile org.pitest:pitest-maven:mutationCoverage
+             Rapport : target/pit-reports/index.html
+             PIT 1.20.0 + plugin JUnit 5 1.2.2 : les versions plus anciennes
+             échouent avec JUnit 5.13. -->
+        <profile>
+            <id>mutation</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.20.0</version>
+                        <configuration>
+                            <targetClasses>
+                                <param>chessball.*</param>
+                            </targetClasses>
+                            <targetTests>
+                                <param>chessball.*</param>
+                            </targetTests>
+                            <excludedClasses>
+                                <param>chessball.ui.*</param>
+                            </excludedClasses>
+                            <outputFormats>
+                                <outputFormat>HTML</outputFormat>
+                            </outputFormats>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.pitest</groupId>
+                                <artifactId>pitest-junit5-plugin</artifactId>
+                                <version>1.2.2</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <!-- 5.20+ obligatoire : 5.14.2 ne sait plus mocker sur JDK 25
+                 (« Mockito cannot mock this class », y compris java.util.Random,
+                 que le TP5 mocke). Vérifié sur JDK 21 et 25. -->
+            <version>5.20.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
