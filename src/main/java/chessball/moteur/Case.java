@@ -3,7 +3,7 @@ package chessball.moteur;
 import java.util.Optional;
 
 /**
-*Case d'un {@link Plateau}
+*Case d'un {@link Plateau}.
 *elle possède une {@link Position} et peut contenir
 *une {@link Piece}.
 */
@@ -11,6 +11,7 @@ public class Case {
 
     private Position p;
     private Piece piece;
+    private boolean ballonPosee;
 
     /**
      * Initialise la case avec sa position sur le plateau
@@ -37,7 +38,7 @@ public class Case {
     }
 
     /**
-     * Si la case est occupee, donne la piece qui l'occupe
+     * Si la case est occupee, donne la {@link Piece} qui l'occupe
      * @return un objet optionnel qui contient la piece, rien sinon
      */
     public Optional<Piece> piece() {
@@ -57,9 +58,18 @@ public class Case {
     }
 
     /**
-     * Supprime la piece dans la case
+     * Supprime la {@link Piece} dans la case
      */
     public void vider() {
         this.piece = null;
+    }
+
+    /**
+     * Permet de poser ou retirer le {@link Ballon} sur la case
+     * @param estPosee le nouvel etat de la case. true si le 
+     * ballon est posee sur la case, false si le ballon est retiree de la case
+     */
+    void poserBallon(boolean estPosee) {
+        this.ballonPosee = estPosee;
     }
 }

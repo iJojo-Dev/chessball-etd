@@ -2,7 +2,7 @@ package chessball.moteur;
 
 
 /**
- * Les elements que les joueurs controlent sur
+ * Les elements que les joueurs controlent
  * sur le {@link Plateau}. Une piece appartient
  * a un type {@link TypePiece} et une {@link Equipe}
  */

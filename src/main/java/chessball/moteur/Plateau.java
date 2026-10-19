@@ -82,4 +82,5 @@ public class Plateau {
         positions_pieces.put(piece, cible);
         cases.get(cible).placer(piece);
     }
+
 }
