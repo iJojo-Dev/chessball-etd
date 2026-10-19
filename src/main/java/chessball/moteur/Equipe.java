@@ -19,12 +19,12 @@ public final class Equipe {
     }
     public void ajouter(Piece piece) {
         if (piece.equipe() == this || piece == null) return;
-        
+
         if (this.equipe.size() >= EFFECTIF) 
             throw new IllegalStateException("equipe pleine");
 
         if (piece.equipe() != null) 
-            throw new IllegalArgumentException("La piece est deja dans une equipe");
+            throw new IllegalStateException("La piece est deja dans une equipe");
 
         equipe.add(piece);
         piece.setEquipe(this);
