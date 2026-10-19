@@ -1,36 +1,65 @@
 package chessball.moteur;
-/*
-Case d'un plateau
-elle possède une position les informations
-sur la pièce qui l'occupe
-*/
+
 import java.util.Optional;
 
+/**
+*Case d'un {@link Plateau}
+*elle possède une {@link Position} et peut contenir
+*une {@link Piece}.
+*/
 public class Case {
 
     private Position p;
     private Piece piece;
 
-    //Initialise la case avec sa position
+    /**
+     * Initialise la case avec sa position sur le plateau
+     * @param position
+     */
     Case(Position position) {
         this.p = position;
     }
 
-    //renvoie la position de la case sur le plateau
+    /**
+     * donnes la position de la case
+     * @return un objet qui représente la position de la case
+     */
     public Position position() {
         return p;
     }
 
-    //renvoie une pièce si la case est occupé, rien sinon
-    //le resultat est un optional qui peut etre vide ou
-    //contenir une piece
+    /**
+     * Indique si la case est occupee ou pas
+     * @return vrai si la case est occupee, faux sinon
+     */
+    public boolean occupee() {
+        return  (piece != null);
+    }
+
+    /**
+     * Si la case est occupee, donne la piece qui l'occupe
+     * @return un objet optionnel qui contient la piece, rien sinon
+     */
     public Optional<Piece> piece() {
-        if (piece == null) return Optional.empty();
+        if (!occupee()) return Optional.empty();
         else return Optional.of(piece);
     }
 
-    //Verfie si la case est occupe par une piece
-    public boolean occupee() {
-        return  (piece != null);
+    /**
+     * Place une piece dans la case si elle est vide
+     * @param p la piece a placer dans la case
+     * @throws IllegalStateException lance une erreur si la case est occupee
+     */
+    public void placer(Piece p) throws IllegalStateException{
+        if (occupee()) 
+            throw new IllegalStateException("Case occupee");
+        this.piece = p;
+    }
+
+    /**
+     * Supprime la piece dans la case
+     */
+    public void vider() {
+        this.piece = null;
     }
 }

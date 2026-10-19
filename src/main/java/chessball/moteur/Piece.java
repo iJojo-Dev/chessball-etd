@@ -1,5 +1,11 @@
 package chessball.moteur;
 
+
+/**
+ * Les elements que les joueurs controlent sur
+ * sur le {@link Plateau}. Une piece appartient
+ * a un type {@link TypePiece} et une {@link Equipe}
+ */
 public final class Piece {
     private TypePiece type;
     private Equipe equipe;

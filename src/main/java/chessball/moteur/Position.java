@@ -16,7 +16,8 @@ public final class Position {
     private final int colonne;
     private final int rangee;
 
-    public Position(int colonne, int rangee) {
+    public Position(int colonne, int rangee) 
+    throws IllegalArgumentException {
         if (colonne < 0 || colonne >= COLONNES || rangee < 0 || rangee >= RANGEES) {
             throw new IllegalArgumentException("hors plateau : " + colonne + "," + rangee);
         }
@@ -25,7 +26,8 @@ public final class Position {
     }
 
     /** Fabrique lisible : {@code Position.of("d4")}. */
-    public static Position of(String algebrique) {
+    public static Position of(String algebrique) 
+    throws IllegalArgumentException {
         if (algebrique == null || algebrique.length() != 2) {
             throw new IllegalArgumentException("notation attendue « a1 ».. « g6 » : " + algebrique);
         }
