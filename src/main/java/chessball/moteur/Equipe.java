@@ -7,19 +7,25 @@ public final class Equipe {
     private Couleur couleur;
     private List<Piece> equipe;
 
-    public Equipe(Couleur couleur){
+    public Equipe(Couleur couleur) {
         this.couleur = couleur;
         equipe = new ArrayList<>();
     }
-    public Couleur couleur(){
+    public Couleur couleur() {
         return this.couleur;
     }
-    public List<Piece> pieces(){
+    public List<Piece> pieces() {
         return new ArrayList<>(equipe);
     }
-    public void ajouter(Piece piece){
-        if(piece.equipe() == this)return;
-        if(this.equipe.size() >= EFFECTIF) throw new IllegalStateException("equipe pleine");
+    public void ajouter(Piece piece) {
+        if (piece.equipe() == this || piece == null) return;
+        
+        if (this.equipe.size() >= EFFECTIF) 
+            throw new IllegalStateException("equipe pleine");
+
+        if (piece.equipe() != null) 
+            throw new IllegalArgumentException("La piece est deja dans une equipe");
+
         equipe.add(piece);
         piece.setEquipe(this);
         }
