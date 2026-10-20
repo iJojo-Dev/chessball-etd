@@ -13,6 +13,7 @@ package chessball.moteur;
 public final class Ballon {
 
     Case caseOccupee;
+    Plateau plateau;
     /**
      * Place le ballon sur le {@link Plateau} de jeu
      * @param plateau le plateau ou le ballon est place
@@ -28,6 +29,7 @@ public final class Ballon {
         if (depart.estZoneDeTouche())
             throw new IllegalArgumentException("Le ballon ne peut pas etre pose sur une ligne de but.");
         caseOccupee.poserBallon(true);
+        this.plateau = plateau;
     }
 
     /**
@@ -41,14 +43,13 @@ public final class Ballon {
     /**
      * Deplace le ballon vers une nouvelle {@link Position}
      * si elle n'est pas occupee et n'est pas une zone de touche
-     * @param plateau le plateau de jeu
      * @param p la nouvellle position du ballon
      * @throws IllegalStateException lance une exception si la nouvelle position est occupee par 
      * une piece
      * @throws IllegalArgumentException lance une exception si la nouvelle position est une zone 
      * de touche
      */
-    public void deplacerVers(Plateau plateau, Position p)
+    public void deplacerVers(Position p)
     throws IllegalStateException, IllegalArgumentException {
         if (p.estZoneDeTouche())
             throw new IllegalArgumentException("Le ballon ne peut etre deplace dans une zone de touche");

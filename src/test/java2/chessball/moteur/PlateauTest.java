@@ -1,6 +1,7 @@
 package chessball.moteur;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,5 +42,33 @@ public class PlateauTest {
         assertThrows(IllegalStateException.class,  () -> plateau.placer(p, Position.of("c5")));
     }
 
-    
+    @Test
+    void caseVideEstLibre(){
+        Position p = new Position(0,0);
+        assertTrue(plateau.estLibre(p));
+    }
+
+    @Test
+    public void caseDevientLibreApresRetraitPiece() {
+        Position p = new Position(1, 1);
+        plateau.placer(att, p);
+        assertFalse(plateau.estLibre(p));
+        plateau.retirer(att);
+        assertTrue(plateau.estLibre(p));
+}
+
+    @Test
+    void caseAvecPieceNonLibre(){
+        Position p = new Position(0, 0);
+        plateau.placer(att, p);
+        assertFalse(plateau.estLibre(p));
+    }
+    @Test
+    void caseAvecBallonNonLibre(){
+        Position p = new Position(0,0);
+        Ballon ballon = new Ballon(plateau, p);
+        assertFalse(plateau.caseA(p).occupee());
+        assertTrue(plateau.caseA(p).porteBallon());
+        assertFalse(plateau.estLibre(p));
+    }
 }

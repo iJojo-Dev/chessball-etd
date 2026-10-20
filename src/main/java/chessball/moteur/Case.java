@@ -11,7 +11,7 @@ public class Case {
 
     private Position p;
     private Piece piece;
-    private boolean ballonPosee;
+    private boolean porteBal;
 
     /**
      * Initialise la case avec sa position sur le plateau
@@ -66,10 +66,15 @@ public class Case {
 
     /**
      * Permet de poser ou retirer le {@link Ballon} sur la case
-     * @param estPosee le nouvel etat de la case. true si le 
+     * @param b le nouvel etat de la case. true si le 
      * ballon est posee sur la case, false si le ballon est retiree de la case
      */
-    void poserBallon(boolean estPosee) {
-        this.ballonPosee = estPosee;
+    void poserBallon(boolean b) {
+        this.porteBal = b;
     }
+
+    public boolean porteBallon() {
+        return this.porteBal;
+    }
+
 }

@@ -30,7 +30,7 @@ public class Plateau {
     }
 
     /**
-     * Donne la case situee a une position donnee
+     * Donne la {@link Case} situee a une position donnee
      * @param p la position de la case
      * @return l'objet case assoocié à la position 
      */
@@ -39,7 +39,7 @@ public class Plateau {
     }
 
     /**
-     * Si la position donnee contient une piece, renvoie une piece
+     * Si la {@link Position} donnee contient une piece, renvoie une piece
      * @param p la position supposee de la piece
      * @return Une piece optionnel, rien sinon
      */
@@ -75,12 +75,44 @@ public class Plateau {
             return;
 
         Optional<Position> positiOptional = positionDe(piece);
+
         if (positiOptional.isPresent()) {
             cases.get(positiOptional.get()).vider();
             positions_pieces.remove(piece);
         }
+        if(!estLibre(cible)){
+            throw new IllegalStateException("La case cible n'est pas libre");
+        }
+
         positions_pieces.put(piece, cible);
         cases.get(cible).placer(piece);
     }
+
+    /**
+     * Verifie s'il n'y a pas de {@link Piece} ou le {@link Ballon}
+     * posee sur la case
+     * @param p la position de la case sur le plateau
+     * @return vrai s'il n'y a ni piece ni ballon, faux sinon
+     */
+    public boolean estLibre(Position p) {
+        return !caseA(p).occupee() && !caseA(p).porteBallon();
+    }
+
+    /**
+     * Retires une {@link Piece} du plateau
+     * @param piece la piece a retirer
+     */
+    public void retirer(Piece piece){
+        if(piece==null){
+            return;
+        }
+
+        Optional<Position> position = positionDe(piece);
+        if (position.isPresent()) {
+            cases.get(position.get()).vider();
+            positions_pieces.remove(piece);
+        }
+    }
+
 
 }
