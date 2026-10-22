@@ -40,7 +40,7 @@ public final class Equipe {
      * @return la liste de piece de l'equipe
      */
     public List<Piece> pieces() {
-        return new ArrayList<>(equipe);
+        return List.copyOf(equipe);
     }
 
     /**
